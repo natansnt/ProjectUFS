@@ -1,21 +1,21 @@
 package My;
 
 class Edge {
-	
-	protected int name, weight;	//Name and Weight's Edge 
-	protected Edge next;			//Next Edge of List
-	
+
+	protected int name, weight; // Name and Weight's Edge
+	protected Edge next; // Next Edge of List
+
 	public Edge(int name, int weight) {
 		this.name = name;
 		this.weight = weight;
-	}//End of Constructor
+	}// End of Constructor
 } // End of Class Edge
 
 class Vertex { // Structure Linked List
 
-	private Edge first, 	// Head of List
-     			 last, 		// Last of List
-				 bygone; 	// Edge recently accesses
+	private Edge first, // Head of List
+			last, // Last of List
+			bygone; // Edge recently accesses
 
 	public Vertex() {
 		first = null;
@@ -24,10 +24,9 @@ class Vertex { // Structure Linked List
 	} // End of Constructor
 
 	private boolean isEmpty() {
-		if (first == null){ 
+		if (first == null) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	} // End of Method isEmpty
@@ -43,35 +42,35 @@ class Vertex { // Structure Linked List
 		}
 	} // End of Method add
 
-	//Method next(): Returns the next edge to be accessed
+	// Method next(): Returns the next edge to be accessed
 	public int next() {
 		Edge aux = bygone;
-		
+
 		if (!isEmpty()) {
-			if (aux == null){ 
+			if (aux == null) {
 				bygone = first;
-			}
-			else{ 
+			} else {
 				bygone = bygone.next;
 			}
 		}
 		return (aux != null) ? aux.name : -1;
 	} // End of Method next
 
-	//Restore the bygone to first position
+	// Restore the bygone to first position
 	public int getFirst() {
 		bygone = null;
 		return next();
-	}//End do Method getFirst
-	
+	}// End do Method getFirst
+
 	/**
 	 * Method to check if there is a next element
+	 * 
 	 * @return boolean
 	 */
-	public boolean hasNext(){
-		if(bygone.next == null){
+	public boolean hasNext() {
+		if (bygone == null) {
 			return false;
-		} else{
+		} else {
 			return true;
 		}
 	}
@@ -79,27 +78,28 @@ class Vertex { // Structure Linked List
 } // End of Class Vertex
 
 public class Graph {
-	
+
 	protected Vertex[] EA;
-	
-	public Graph(int ordem){
+
+	public Graph(int ordem) {
 		EA = new Vertex[ordem];
-		for(int i = 0; i < ordem; i++){
+		for (int i = 0; i < ordem; i++) {
 			EA[i] = new Vertex();
 		}
-	}//End of Constructor
-	
-	public void join(int v1, int v2, int weight){
+	}// End of Constructor
+
+	public void join(int v1, int v2, int weight) {
 		EA[v1].add(v2, weight);
-	}
-	public void imprime(int ordem){
-            for (int i = 0; i < ordem; i++) {
-				System.out.print(i + "-> ");
-				while (EA[i].hasNext()) {
-					System.out.print(EA[i].next() + " ");
-				}
-				System.out.println();
+	}//End of Method join
+
+	public void print() {
+		for (int i = 0; i < EA.length; i++) {
+			System.out.print(i + "-> ");
+			while (EA[i].hasNext()) {
+				System.out.print(EA[i].next() + " ");
 			}
-        }
-	
-}//End of Class Graph
+			System.out.println();
+		}
+	}// End of Method print
+
+}// End of Class Graph
