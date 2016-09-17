@@ -92,5 +92,14 @@ public class Graph {
 	public void join(int v1, int v2, int weight){
 		EA[v1].add(v2, weight);
 	}
+	public void imprime(int ordem){
+            for (int i = 0; i < ordem; i++) {
+				System.out.print(i + "-> ");
+				while (EA[i].hasNext()) {
+					System.out.print(EA[i].next() + " ");
+				}
+				System.out.println();
+			}
+        }
 	
 }//End of Class Graph
