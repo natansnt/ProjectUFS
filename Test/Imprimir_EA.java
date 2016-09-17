@@ -1,34 +1,39 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package My;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Scanner;
 
-public class Imprimir_EA {
+/**
+ *
+ * @author Nayara
+ */
+public class testeclass {
 
-	public static void main(String[] args) {
+    /**
+     * @param args the command line arguments
+     * @throws java.io.FileNotFoundException
+     */
+    public static void main(String[] args) throws FileNotFoundException {
+        // TODO code application logic here
 
-		try {
-			Scanner ler = new Scanner(new FileReader(args[0]));
-			int ordem = ler.nextInt();
-			int edge = ler.nextInt();
-			Graph x = new Graph(ordem);
+        Scanner scanner = new Scanner(new FileReader("entradas.txt"));
 
-			for (int i = 0; i < edge; i++)
-				x.join(ler.nextInt(), ler.nextInt(), ler.nextInt());
+        int number_vertex = (scanner.nextInt());
+        int number_edge = (scanner.nextInt());
+        Graph graph = new Graph(number_edge);
+        while (scanner.hasNext()) {
+            int vertex1 = (scanner.nextInt());
+            int vertex2 = (scanner.nextInt());
+            int weight = (scanner.nextInt());
+            graph.join(vertex1, vertex2, weight);
+        }
+        graph.imprime(number_vertex);
+    }
 
-			for (int i = 0; i < ordem; i++) {
-				System.out.print(i + "-> ");
-				while (x.EA[i].hasNext()) {
-					System.out.print(x.EA[i].next() + " ");
-				}
-				System.out.println();
-			}
-
-			ler.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-}//End of Class Imprimir_EA
+}
