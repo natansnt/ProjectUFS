@@ -19,12 +19,11 @@ public class Djikstra {
 
     while(!heap.isEmpty()){ // Heap não estiver Vazio
       
-    	Node min = heap.remove();      
+      Node min = heap.remove();      
       
       while( graph.EA[min.getVertex()].hasNext() ){ 	//Para todas as arestas
         
-    	  Edge adj =  graph.EA[min.getVertex()].next(); //Pegua uma aresta
-        
+    	Edge adj =  graph.EA[min.getVertex()].next(); //Pegua uma aresta
         //distancia do possivel caminho mais curto
         int aux = distance[min.getVertex()].getDistance() + adj.weight;
 
@@ -33,7 +32,8 @@ public class Djikstra {
           vis_way[adj.name] = min.getVertex();  		  // Salva o caminho
           heap.fixHeap(adj.name); 						  // HeapFy no Heap, Mantendo a propriedade
         }
-      }    
+      }
+
     }//End of While
     imprime(root, end); // Imprime caminho no final
     System.out.println("Distancia Total: "+ distance[end].getDistance());
