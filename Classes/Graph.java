@@ -43,7 +43,7 @@ class Vertex { // Structure Linked List
 	} // End of Method add
 
 	// Method next(): Returns the next edge to be accessed
-	public int next() {
+	public Edge next() {
 		Edge aux = bygone;
 
 		if (!isEmpty()) {
@@ -53,11 +53,11 @@ class Vertex { // Structure Linked List
 				bygone = bygone.next;
 			}
 		}
-		return (aux != null) ? aux.name : -1;
+		return aux;
 	} // End of Method next
 
 	// Restore the bygone to first position
-	public int getFirst() {
+	public Edge getFirst() {
 		bygone = null;
 		return next();
 	}// End do Method getFirst
@@ -80,10 +80,12 @@ class Vertex { // Structure Linked List
 public class Graph {
 
 	protected Vertex[] EA;
+	protected int order;
 
-	public Graph(int ordem) {
-		EA = new Vertex[ordem];
-		for (int i = 0; i < ordem; i++) {
+	public Graph(int order) {
+		this.order = order;
+		EA = new Vertex[order];
+		for (int i = 0; i < order; i++) {
 			EA[i] = new Vertex();
 		}
 	}// End of Constructor
@@ -93,10 +95,10 @@ public class Graph {
 	}//End of Method join
 
 	public void print() {
-		for (int i = 0; i < EA.length; i++) {
+		for (int i = 0; i < order; i++) {
 			System.out.print(i + "-> ");
 			while (EA[i].hasNext()) {
-				System.out.print(EA[i].next() + " ");
+				System.out.print(EA[i].next().name + " ");
 			}
 			System.out.println();
 		}

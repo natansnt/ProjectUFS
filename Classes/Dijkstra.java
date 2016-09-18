@@ -1,72 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package My;
 
-import static java.lang.Integer.MAX_VALUE;
-
-/**
- *
- * @author Nayara
- */
 public class Dijkstra {
-   // private static final int MAXVALUE = 1000;
-   private  int []  vis_way ;
-   private  int [] distace;
-   private int [] position;
-   private Node  [] node;
-   private Graph graph;
-    
-    
-    public  Dijkstra(int init, int end, Graph graph){
-       this.graph = graph;
-       
-       int n = this.graph.EA.length;
-       
-       this.position = new int [n];
-       this.distace = new int [n];
-       this.vis_way = new int [n];
-       this.node = new Node[n];
-       
-       //graph.numberVertice();
-          
-        for(int i = 0;i< n;i++){
-                distace[i] = MAX_VALUE;
-                vis_way[i] = -1;
-                position[i] = i; 
-                node[i] = new Node(i,MAX_VALUE);
-        }
-        distace[init] = 0;
-     
-        node[init]   = new Node(position[init], distace[init]);
-        Min_Heap heap = new Min_Heap(node);
-        while(!heap.isEmpty()){
-            Node min = heap.remove();
-            
-            if(!graph.EA[min.getVertex()].isEmpty()){
-                Edge adj =  graph.EA[min.getVertex()].next();
-                while( adj != null){
-                    int v = adj.name;
-                    if (distace[v] > (distace[min.getVertex()] + adj.weight)) {
-                        vis_way[v] = distace[min.getVertex()]; 
-                        heap.fixHeap(v);
-                       
-                    }
-                adj = graph.EA[min.getVertex()].next();
-            }
-        }    
-    }
-   
-}
-        
-    
-  public void imprime () {
-    for (int u = 0; u < distace.length; u++)
-      if (vis_way[u] != -1) 
-        System.out.println ("(" +vis_way[u] +"," +u+ ") -- p:" +distace[u]);
 
+   private  int[] vis_way ;
+   private Node[] distance;
+   private Graph graph;
+      
+  public  Dijkstra(int root, int end, Graph graph){
+     
+    this.graph = graph;  // Referencia para o Grafo
+    this.vis_way = new int [graph.order];  // Armazena o caminho para chegar no vertice[i]  
+    this.distance = new Node[graph.order]; // Armazena distancia do root ate o vertice[i]
+          
+    for(int i = 0;i< n;i++){ //Inicializa Vetor distance e vis_way
+      distance.setVertex(i);
+      distance[i].setDistance(Integer.MAX_VALUE);
+      vis_way[i] = -1;
+    }
+    distace[root].setDistance(0); //distance da raiz pra ela msm é 0
+    Min_Heap heap = new Min_Heap(distance); // Heap minimo
+
+    while(!heap.isEmpty()){ // Heap não estiver Vazio
+      Node min = heap.remove();      
+      while( graph.EA[min.getVertex()].hasNext() ){ //Para todas as arestas
+          Edge adj =  graph.EA[min.getVertex()].next(); //Pegua uma aresta
+          //distancia do possivel caminho mais curto
+          int aux = distace[min.getVertex()].weight + adj.weight;
+
+          if (distace[adj.name].weight > aux ) {    //Se for mais curto
+            distace[adj.name].setDistance(aux); // atualiza valor
+            vis_way[adj.name] = min.getVertex();  // Salva o caminho
+            heap.fixHeap(adj.name); // HeapFy no Heap, Mantendo a propriedade
+          }
+        }
+      }    
+    }//End of While
+    imprime(root, end); // Imprime caminho no final
+    System.out.println("Distancia Total: "+ distance[end].weight);
   }
-    
+        
+  public void imprime (int root, int end) {
+      if(root != end){
+        imprime(root,vis_way[end]);
+        System.out.print(end + " ");
+      }else{
+          System.out.print(root + " ");
+      }
+  }
 }
