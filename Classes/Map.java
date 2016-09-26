@@ -1,4 +1,4 @@
-package my;
+package My;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -33,12 +33,12 @@ public class Map extends JPanel {
   private Icons vertices[];
   private boolean Matriz[][];
   private int root, end;
-  private Djikstra algorithm;
+  public Djikstra algorithm;
   private Graph graph;
 
   public Map() throws MalformedURLException {
     super();
-    super.setBackground(Color.GRAY);
+    super.setBackground(Color.WHITE);
     super.setLayout(null);
     super.setSize(600, 600);
     
@@ -54,9 +54,27 @@ public class Map extends JPanel {
 
   public void initIcons() throws MalformedURLException {
     
-    for(int i = 0; i < 19; i++) {
-      vertices[i] = new Icons(0, new URL("file:///D:/workspace/Projeto/imagens/entrada.png"));
-    }
+    
+      vertices[0] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/entrada.png"));
+      vertices[1] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[2] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[3] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[4] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[5] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[6] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
+      vertices[7] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/moura.png"));
+      vertices[8] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/resun.png"));
+      vertices[9] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/bicen2.png"));
+      vertices[10] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/reitoria.png"));
+      vertices[11] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccet.png"));
+      vertices[12] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccbs.png"));
+      vertices[13] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/dce.png"));
+      vertices[14] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/cv.png"));
+      vertices[15] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/cech1.png"));
+      vertices[16] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/CECH2.png"));
+      vertices[17] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccsa2.png"));
+      vertices[18] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccsa1.png"));
+    
     
     vertices[0].setBounds(points[0] = new Rectangle(this.getWidth()/2 - 30, 0, 30, 30));           // OK ENTRADA
     vertices[1].setBounds(points[1] = new Rectangle(this.getWidth()/2 - 120, 130, 30, 30 ));       // OK DID1
@@ -66,12 +84,12 @@ public class Map extends JPanel {
     vertices[5].setBounds(points[5] = new Rectangle(this.getWidth()/2 + 5, 60, 30, 30 ));         // OK DID5
     vertices[6].setBounds(points[6] = new Rectangle(this.getWidth()/2 - 90, 60, 30, 30 ));         // OK DID6
     vertices[7].setBounds(points[7] = new Rectangle(this.getWidth()/2 - 220, 155, 30, 30 ));       // OK MOURA
-    vertices[8].setBounds(points[8] = new Rectangle(this.getWidth()/2 - 260, 220, 30, 30 ));       // OK RESUN 
-    vertices[9].setBounds(points[9] = new Rectangle(this.getWidth()/2 - 260, 320, 30, 30 ));       // OK BICEN
-    vertices[10].setBounds(points[10] = new Rectangle(this.getWidth()/2 - 30, 380, 30, 30 ));       // OK REITORIA
+    vertices[8].setBounds(points[8] = new Rectangle(this.getWidth()/2 - 260, 230, 30, 30 ));       // OK RESUN 
+    vertices[9].setBounds(points[9] = new Rectangle(this.getWidth()/2 - 260, 320, 30, 40 ));       // OK BICEN
+    vertices[10].setBounds(points[10] = new Rectangle(this.getWidth()/2 - 30, 385, 30, 30 ));       // OK REITORIA
     vertices[11].setBounds(points[11] = new Rectangle(this.getWidth()/2 + 180, 310, 30, 30 ));      // OK CCET
     vertices[12].setBounds(points[12] = new Rectangle(this.getWidth()/2 + 180, 270, 30, 30 ));      // OK CCBS
-    vertices[13].setBounds(points[13] = new Rectangle(this.getWidth()/2 + 165, 190, 30, 30 ));      // OK DCE
+    vertices[13].setBounds(points[13] = new Rectangle(this.getWidth()/2 + 165, 190, 40, 40 ));      // OK DCE
     vertices[14].setBounds(points[14] = new Rectangle(this.getWidth()/2 + 200, 140, 30, 30 ));      // OK CV
     vertices[15].setBounds(points[15] = new Rectangle(this.getWidth()/2 - 150, 190, 30, 30 ));      // OK DEPD
     vertices[16].setBounds(points[16] = new Rectangle(this.getWidth()/2 - 80, 190, 30, 30 ));       // OK DEPC
