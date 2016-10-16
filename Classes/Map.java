@@ -1,274 +1,322 @@
-package My;
+/**
+ * Federal University of Sergipe Computing Department - DCOMP
+ * 
+ * @author Natanael Batista dos Santos
+ * @author Paulo de Brito
+ * 
+ * Class responsible for the UI
+ */
+package my;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-
+/**
+ * Class responsible for icon of the vertices
+ * @author Natanael and Paulo
+ *
+ */
 class Icons extends JLabel {
   private static final long serialVersionUID = 1L;
   private int vertex;
 
   public Icons(int vertex, URL url) {
     super(new ImageIcon(url));
-  }
+    this.vertex = vertex;
 
-  public int getVertex() {
-    return vertex;
+    super.addMouseListener(new MouseListener() {
+
+      @Override
+      public void mouseReleased(MouseEvent e) {}
+
+      @Override
+      public void mousePressed(MouseEvent e) {}
+
+      @Override
+      public void mouseExited(MouseEvent e) {}
+
+      @Override
+      public void mouseEntered(MouseEvent e) {}
+
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (Map.control == 0) {
+          Map.root = getVertex();
+          Map.t1.setText(Map.nomes[getVertex()]);
+        } else {
+          Map.end = getVertex();
+          Map.t2.setText(Map.nomes[getVertex()]);
+        }
+      }
+    });
   }
-}
+  
+  public int getVertex() {
+    return this.vertex;
+  }
+}  // End of Class Icons
+
 
 public class Map extends JPanel {
 
+  protected static JTextField t1, t2;  // Text's Boxes
+  protected static String nomes[];  // Names of the Vertices
+  protected static int root, end, control;  // Origin, Destiny and Variable of control
   private static final long serialVersionUID = 1L;
-  private Rectangle points[];
-  private Icons vertices[];
-  private boolean Matriz[][];
-  private int root, end;
-  public Djikstra algorithm;
-  private Graph graph;
 
-  public Map() throws MalformedURLException {
+  private Djikstra algorithm;
+  private Graph graph;  // Map Graph
+  private Icons vertices[];  // Image of Vertices
+  private JButton b1, b2, start;  // Buttons
+  private JLabel legend;  // Image of legend
+  private ArrayList<Vertex> way_paint, way; // way for paint and way for restore
+
+  public Map(Graph G) throws MalformedURLException {
     super();
-    super.setBackground(Color.WHITE);
     super.setLayout(null);
     super.setSize(600, 600);
-    
-    Matriz = new boolean[600][600];
-    
-    root = -1;
-    end = -1;
-    points = new Rectangle[19];
+    super.setBackground(new Color(0, 0, 0, 0));
+
+    graph = G;
+    algorithm = new Djikstra(graph);
+    b1 = new JButton("Origem");
+    b2 = new JButton("Destino");
+    legend =
+        new JLabel(new ImageIcon(new File("imagens/legenda.png").toURL()));
+    t1 = new JTextField("Escolha");
+    t2 = new JTextField("Escolha");
+    start = new JButton("Procurar");
     vertices = new Icons[19];
+    end = -1;
+    root = -1;
+
     initIcons();
-    initMatriz();
-  }
+    initNomes();
+  } // End of Constructor
+
+  private void initNomes() {
+    nomes = new String[19];
+    nomes[0] = "Entrada";
+    nomes[1] = "Didática 1";
+    nomes[2] = "Didática 2";
+    nomes[3] = "Didática 3";
+    nomes[4] = "Didática 4";
+    nomes[5] = "Didática 5";
+    nomes[6] = "Didática 6";
+    nomes[7] = "Moura";
+    nomes[8] = "Resun";
+    nomes[9] = "Bicen";
+    nomes[10] = "Reitoria";
+    nomes[11] = "CCET";
+    nomes[12] = "CCBS";
+    nomes[13] = "DCE";
+    nomes[14] = "Centro de Vivência";
+    nomes[15] = "CCSA 1";
+    nomes[16] = "CCSA 2";
+    nomes[17] = "CCEH 1";
+    nomes[18] = "CCEH 2";
+  } // End of Method initNomes
 
   public void initIcons() throws MalformedURLException {
+
+    for (int i = 0; i < 19; i++) {
+      vertices[i] = new Icons(i, new File("imagens/" + i + ".png").toURL());
+    }
+    vertices[0].setBounds(270, 9, 30, 30);
+    vertices[1].setBounds(180, 130, 30, 30); 
+    vertices[2].setBounds(261, 130, 30, 30); 
+    vertices[3].setBounds(344, 130, 30, 30); 
+    vertices[4].setBounds(423, 130, 30, 30);
+    vertices[5].setBounds(307, 60, 30, 30);
+    vertices[6].setBounds(212, 60, 30, 30);
+    vertices[7].setBounds(80, 155, 30, 30);
+    vertices[8].setBounds(42, 220, 30, 30);
+    vertices[9].setBounds(42, 320, 30, 30); 
+    vertices[10].setBounds(274, 380, 30, 30); 
+    vertices[11].setBounds(484, 310, 30, 30);
+    vertices[12].setBounds(486, 270, 30, 30);
+    vertices[13].setBounds(462, 194, 30, 30); 
+    vertices[14].setBounds(504, 142, 30, 30); 
+    vertices[15].setBounds(152, 198, 30, 30);
+    vertices[16].setBounds(222, 198, 30, 30);
+    vertices[17].setBounds(308, 198, 30, 30); 
+    vertices[18].setBounds(385, 196, 30, 30); 
     
-    
-      vertices[0] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/entrada.png"));
-      vertices[1] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[2] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[3] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[4] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[5] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[6] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/did.png"));
-      vertices[7] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/moura.png"));
-      vertices[8] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/resun.png"));
-      vertices[9] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/bicen2.png"));
-      vertices[10] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/reitoria.png"));
-      vertices[11] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccet.png"));
-      vertices[12] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccbs.png"));
-      vertices[13] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/dce.png"));
-      vertices[14] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/cv.png"));
-      vertices[15] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/cech1.png"));
-      vertices[16] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/CECH2.png"));
-      vertices[17] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccsa2.png"));
-      vertices[18] = new Icons(0, new URL("file:///C:/Users/Nayara/Documents/NetBeansProjects/PAA/src/My/image_grafos/ccsa1.png"));
-    
-    
-    vertices[0].setBounds(points[0] = new Rectangle(this.getWidth()/2 - 30, 0, 30, 30));           // OK ENTRADA
-    vertices[1].setBounds(points[1] = new Rectangle(this.getWidth()/2 - 120, 130, 30, 30 ));       // OK DID1
-    vertices[2].setBounds(points[2] = new Rectangle(this.getWidth()/2 - 40, 130, 30, 30 ));        // OK DID2
-    vertices[3].setBounds(points[3] = new Rectangle(this.getWidth()/2 + 40, 130, 30, 30 ));        // OK DID3
-    vertices[4].setBounds(points[4] = new Rectangle(this.getWidth()/2 + 120, 130, 30, 30 ));       // OK DID4
-    vertices[5].setBounds(points[5] = new Rectangle(this.getWidth()/2 + 5, 60, 30, 30 ));         // OK DID5
-    vertices[6].setBounds(points[6] = new Rectangle(this.getWidth()/2 - 90, 60, 30, 30 ));         // OK DID6
-    vertices[7].setBounds(points[7] = new Rectangle(this.getWidth()/2 - 220, 155, 30, 30 ));       // OK MOURA
-    vertices[8].setBounds(points[8] = new Rectangle(this.getWidth()/2 - 260, 230, 30, 30 ));       // OK RESUN 
-    vertices[9].setBounds(points[9] = new Rectangle(this.getWidth()/2 - 260, 320, 30, 40 ));       // OK BICEN
-    vertices[10].setBounds(points[10] = new Rectangle(this.getWidth()/2 - 30, 385, 30, 30 ));       // OK REITORIA
-    vertices[11].setBounds(points[11] = new Rectangle(this.getWidth()/2 + 180, 310, 30, 30 ));      // OK CCET
-    vertices[12].setBounds(points[12] = new Rectangle(this.getWidth()/2 + 180, 270, 30, 30 ));      // OK CCBS
-    vertices[13].setBounds(points[13] = new Rectangle(this.getWidth()/2 + 165, 190, 40, 40 ));      // OK DCE
-    vertices[14].setBounds(points[14] = new Rectangle(this.getWidth()/2 + 200, 140, 30, 30 ));      // OK CV
-    vertices[15].setBounds(points[15] = new Rectangle(this.getWidth()/2 - 150, 190, 30, 30 ));      // OK DEPD
-    vertices[16].setBounds(points[16] = new Rectangle(this.getWidth()/2 - 80, 190, 30, 30 ));       // OK DEPC
-    vertices[17].setBounds(points[17] = new Rectangle(this.getWidth()/2 + 5, 190, 30, 30 ));        // OK DEPB
-    vertices[18].setBounds(points[18] = new Rectangle(this.getWidth()/2 + 82, 190, 30, 30 ));        // OK DEPA
-    
-    for(int i = 0; i < 19; i++) {
+    for (int i = 0; i < 19; i++) {
       super.add(vertices[i]);
     }
-  }
-  
-  private void initMatriz(){
-    for (int i = 0; i < Matriz.length; i++) {
-      for (int k = 0; k < Matriz.length; k++) {
-        Matriz[i][k] = false;        
+    super.add(b1);
+    super.add(b2);
+    super.add(legend);
+    super.add(t1);
+    super.add(t2);
+    super.add(start);
+
+    t1.setBounds(88, 390, 120, 25);
+    t2.setBounds(88, 420, 120, 25);
+    b1.setBounds(5, 390, 80, 25);
+    b2.setBounds(5, 420, 80, 25);
+    start.setBounds(500, 420, 90, 25);
+    legend.setBounds(0, 412, 600, 200);
+    t1.setEditable(false);
+    t2.setEditable(false);
+    actionButton();
+  }  // End of Method initIcons
+
+  private void actionButton() {
+    b1.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        control = 0;
+      }
+    });
+    b2.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        control = 1;
+      }
+    });
+    start.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        if(root == -1 || end == -1) {
+          JOptionPane.showMessageDialog(null, "Por Favor Escolha o Seu Trajeto!");
+        } else {
+          if( root == end) {
+            JOptionPane.showMessageDialog(null, "Por Favor Escolha o Destino!");
+          } else {
+            way = algorithm.start(root, end);
+            paintWay();            
+          }
+        }
+      }
+    });
+  } // End of Method actionButton
+
+  private Edge aresta(Vertex v, int v2) {
+    Edge aux = v.next();
+    
+    while (aux.name != v2) {
+      aux = v.next();
+    }
+    return aux;
+  } // End of Method aresta
+
+  private void paintWay() {
+    Edge aux;
+
+    if (way_paint != null) {
+      graph.reset();
+      for (int i = 0; i < way_paint.size() - 1; i++) {
+        aux = aresta(way_paint.get(i), way_paint.get(i + 1).getName());
+        paint(aux, 0);
       }
     }
-  }
-  
-  private void ligar(int x, int y, int x1, int y1){
-    if(x == x1){
-      if(y > y1){
-        for (int i = y; i != y1 ; i--) {
-          Matriz[x][i] = true;
-        }
-      }else if(y < y1){
-        for (int i = y; i != y1 ; i++) {
-          Matriz[x][i] = true;
-        }
-      }
-    }else{
-      if(y == y1){
-        if(x > x1){
-          for (int i = x; i != x1 ; i--) {
-            Matriz[i][y] = true;
-          }
-        }else if(x < x1){
-          for (int i = x; i != x1 ; i++) {
-            Matriz[i][y] = true;
-          }
-        } 
+    if (start != null) {
+      graph.reset();
+      for (int i = 0; i < way.size() - 1; i++) {
+        aux = aresta(way.get(i), way.get(i + 1).getName());
+        paint(aux, 1);
       }
     }
-  }
+    way_paint = way;
+  }  // End of Method paintWay
+
+  private void paint(Edge w, int x) {
+    Graphics2D g2 = (Graphics2D) this.getGraphics();
+    RenderingHints rh =
+        new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    BasicStroke line = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+
+    g2.setRenderingHints(rh);
+    g2.setStroke(line);
+    if (x == 0) {
+      g2.setColor(Color.BLACK);
+    } else {
+      g2.setColor(Color.RED);
+    }
+    for (int i = 0; i < w.coordinates.size() - 1; i++) {
+      int x1 = w.coordinates.get(i).x;
+      int y1 = w.coordinates.get(i).y;
+      int x2 = w.coordinates.get(i + 1).x;
+      int y2 = w.coordinates.get(i + 1).y;
+      g2.drawLine(x1, y1, x2, y2);
+    }
+    g2.dispose();
+  } // End of Method paint
+
 
   @Override
   protected void paintComponent(Graphics g) {
+
     super.paintComponent(g);
-    
+
     Graphics2D g2 = (Graphics2D) g.create();
     RenderingHints rh =
         new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     BasicStroke line = new BasicStroke(3.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-    
+
     g2.setRenderingHints(rh);
     g2.setStroke(line);
     g2.setColor(Color.BLACK);
-    
-    g2.drawLine(this.getWidth()/2 - 12, 25, this.getWidth()/2 - 12, 110);       //CAMINHO DA ENTRADA
-    ligar(this.getWidth()/2 - 12, 25, this.getWidth()/2 - 12, 110);  // X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 12, 110, this.getWidth()/2 - 175, 110);     //CAMINHO ENTRADA MOURA
-    ligar(this.getWidth()/2 - 12, 110, this.getWidth()/2 - 175, 110); //Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 12, 110, this.getWidth()/2 + 180, 110);     //CAMINHO ENTRADA DID 4
-    ligar(this.getWidth()/2 - 12, 110, this.getWidth()/2 + 180, 110); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 180, 110, this.getWidth()/2 + 180, 160);    //CAMINHO ENTRADA CV
-    ligar(this.getWidth()/2 + 180, 110, this.getWidth()/2 + 180, 160); //X = X1
-    
-    g2.drawLine(this.getWidth()/2 + 180, 160, this.getWidth()/2 + 202, 160);    //CV
-    ligar(this.getWidth()/2 + 180, 160, this.getWidth()/2 + 202, 160); //Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 72, 110, this.getWidth()/2 - 72, 89);       //DID6
-    ligar(this.getWidth()/2 - 72, 110, this.getWidth()/2 - 72, 89); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 102, 112, this.getWidth()/2 - 102, 135);    //DID1
-    ligar(this.getWidth()/2 - 102, 112, this.getWidth()/2 - 102, 135); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 + 22, 89, this.getWidth()/2 + 22, 175);       //DID5
-    ligar(this.getWidth()/2 + 22, 89, this.getWidth()/2 + 22, 175); //X = X1
-    
-    g2.drawLine(this.getWidth()/2 + 22, 150, this.getWidth()/2 + 42, 150);      //DID3
-    ligar(this.getWidth()/2 + 22, 150, this.getWidth()/2 + 42, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 22, 150, this.getWidth()/2 - 9, 150);       //DID2
-    ligar(this.getWidth()/2 + 22, 150, this.getWidth()/2 - 9, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 100, 110, this.getWidth()/2 + 100, 198);    //CAMINHO ENTRADA DID 4 DID 3
-    ligar(this.getWidth()/2 + 100, 110, this.getWidth()/2 + 100, 198); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 + 100, 150, this.getWidth()/2 + 122, 150);    //DID 4
-    ligar(this.getWidth()/2 + 100, 150, this.getWidth()/2 + 122, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 100, 150, this.getWidth()/2 + 73, 150);     //DID 4 DID 3
-    ligar(this.getWidth()/2 + 100, 150, this.getWidth()/2 + 73, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 88, 150, this.getWidth()/2 - 37, 150);      //DID 1 DID 2
-    ligar(this.getWidth()/2 - 88, 150, this.getWidth()/2 - 37, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 175, 110, this.getWidth()/2 - 175, 265);    //CAMINHO ENTRADA MOURA
-    ligar(this.getWidth()/2 - 175, 110, this.getWidth()/2 - 175, 265); //X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 175, 175, this.getWidth()/2 - 189, 175);    //MOURA
-    ligar(this.getWidth()/2 - 175, 175, this.getWidth()/2 - 189, 175); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 175, 175, this.getWidth()/2 + 195, 175);    //CAMINHO MOURA DCE
-    ligar(this.getWidth()/2 - 175, 175, this.getWidth()/2 + 195, 175); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 195, 175, this.getWidth()/2 + 195, 160);    //CAMINHO MOURA DCE CV
-    ligar(this.getWidth()/2 + 195, 175, this.getWidth()/2 + 195, 160); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 102, 175, this.getWidth()/2 - 102, 155);    //DID1 MOURA DCE
-    ligar(this.getWidth()/2 - 102, 175, this.getWidth()/2 - 102, 155); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 - 23, 175, this.getWidth()/2 - 23, 155);      //DID2 MOURA DCE
-    ligar(this.getWidth()/2 - 23, 175, this.getWidth()/2 - 23, 155); // X =X1
-    
-    g2.drawLine(this.getWidth()/2 + 58, 175, this.getWidth()/2 + 58, 155);      //DID3 MOURA DCE
-    ligar(this.getWidth()/2 + 58, 175, this.getWidth()/2 + 58, 155); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 - 132, 175, this.getWidth()/2 - 132, 197);    //DEPD MOURA DCE
-    ligar(this.getWidth()/2 - 132, 175, this.getWidth()/2 - 132, 197); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 - 62, 150, this.getWidth()/2 - 62, 197);      //DEPC MOURA DCE
-    ligar(this.getWidth()/2 - 62, 150, this.getWidth()/2 - 62, 197); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 + 23, 175, this.getWidth()/2 + 23, 197);      //DEPB MOURA DCE
-    ligar(this.getWidth()/2 + 23, 175, this.getWidth()/2 + 23, 197); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 132, 175, this.getWidth()/2 - 132, 197);    //DEPA MOURA DCE
-    ligar(this.getWidth()/2 - 132, 175, this.getWidth()/2 - 132, 197); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 - 120, 210, this.getWidth()/2 - 70, 210);     //DEPD DEPC
-    ligar(this.getWidth()/2 - 120, 210, this.getWidth()/2 - 70, 210); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 50, 210, this.getWidth()/2 + 8, 210);       //DEPC DEPB
-    ligar(this.getWidth()/2 - 50, 210, this.getWidth()/2 + 8, 210); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 38, 210, this.getWidth()/2 + 85, 210);      //DEPB DEPA
-    ligar(this.getWidth()/2 + 38, 210, this.getWidth()/2 + 85, 210); //Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 110, 210, this.getWidth()/2 + 168, 210);    //DEPA DCE
-    ligar(this.getWidth()/2 + 110, 210, this.getWidth()/2 + 168, 210); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 183, 197, this.getWidth()/2 + 183, 178);    //DEPA DCE
-    ligar(this.getWidth()/2 + 183, 197, this.getWidth()/2 + 183, 178); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 + 152, 150, this.getWidth()/2 + 160, 150);    //DID 4 DCE
-    ligar(this.getWidth()/2 + 152, 150, this.getWidth()/2 + 160, 150); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 160, 150, this.getWidth()/2 + 160, 370);    //DCE CCET
-    ligar(this.getWidth()/2 + 160, 150, this.getWidth()/2 + 160, 370); // X = X1
-    
-    g2.drawLine(this.getWidth()/2 + 160, 370, this.getWidth()/2 - 210, 370);    //CCET BICEN
-    ligar(this.getWidth()/2 + 160, 370, this.getWidth()/2 - 210, 370); //Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 210, 370, this.getWidth()/2 - 210, 265);    //CCET BICEN
-    ligar(this.getWidth()/2 - 210, 370, this.getWidth()/2 - 210, 265); //X = X1
-    
-    g2.drawLine(this.getWidth()/2 - 242, 265, this.getWidth()/2 - 175, 265);    //BICEN RESUN
-    ligar(this.getWidth()/2 - 242, 265, this.getWidth()/2 - 175, 265); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 242, 326, this.getWidth()/2 - 242, 245);
-    ligar(this.getWidth()/2 - 242, 326, this.getWidth()/2 - 242, 245); // X= X1
-    
-    g2.drawLine(this.getWidth()/2 - 242, 320, this.getWidth()/2 - 210, 320);
-    ligar(this.getWidth()/2 - 242, 320, this.getWidth()/2 - 210, 320);  // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 160, 290, this.getWidth()/2 + 182 , 290);
-    ligar(this.getWidth()/2 + 160, 290, this.getWidth()/2 + 182 , 290); // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 + 160, 332, this.getWidth()/2 + 182 , 332);
-    ligar(this.getWidth()/2 + 160, 332, this.getWidth()/2 + 182 , 332);  // Y = Y1
-    
-    g2.drawLine(this.getWidth()/2 - 12, 370, this.getWidth()/2 - 12, 384);    //CCET BICEN
-    ligar(this.getWidth()/2 - 12, 370, this.getWidth()/2 - 12, 384);    // X= X1
-    
+
+    g2.drawLine(285, 35, 285, 110);  // Entrada
+    g2.drawLine(125, 110, 480, 110); // Caminho
+    g2.drawLine(480, 110, 480, 160); // Caminho
+    g2.drawLine(480, 160, 502, 160); // CV 
+    g2.drawLine(198, 110, 198, 133); // Did1 
+    g2.drawLine(291, 150, 342, 150); // Did2 - Did3
+    g2.drawLine(373, 150, 422, 150);  // Did3 - Did4
+    g2.drawLine(322, 89, 322, 175); // Did5
+    g2.drawLine(228, 110, 228, 89); // Did6
+    g2.drawLine(400, 110, 400, 198); // Caminho
+    g2.drawLine(238, 150, 263, 150); // Did2
+    g2.drawLine(125, 110, 125, 265); // Caminho
+    g2.drawLine(111, 175, 495, 175); // Moura - Caminho
+    g2.drawLine(495, 175, 495, 160); // Caminho - CV
+    g2.drawLine(198, 175, 198, 158); // Did1
+    g2.drawLine(277, 175, 277, 155); // Did2
+    g2.drawLine(358, 175, 358, 155); // Did3
+    g2.drawLine(238, 150, 238, 197); // Caminho - Did2
+    g2.drawLine(323, 175, 323, 197); // CCEH1
+    g2.drawLine(168, 175, 168, 197); // CCSA 1
+    g2.drawLine(180, 210, 224, 210); // CCSA1 - CCSA2
+    g2.drawLine(250, 210, 308, 210); // CCSA2 - CCEH1 
+    g2.drawLine(338, 210, 385, 210); //CCEH1 - CCEH2
+    g2.drawLine(415, 210, 468, 210); // CCEH2 - DCE 
+    g2.drawLine(483, 194, 483, 175); // DCE
+    g2.drawLine(452, 150, 460, 150); // Did4 
+    g2.drawLine(460, 150, 460, 370); // Caminho 
+    g2.drawLine(460, 370, 90, 370); // Caminho 
+    g2.drawLine(90, 265, 90, 370); // Caminho 
+    g2.drawLine(58, 265, 125, 265); // Caminho
+    g2.drawLine(58, 245, 58, 326); // Resun - Bicen
+    g2.drawLine(58, 320, 90, 320); // Bicen
+    g2.drawLine(460, 290, 482, 290); // CCBS
+    g2.drawLine(460, 332, 482, 332); // CCET
+    g2.drawLine(288, 370, 288, 384); // Reitoria
+
     g2.dispose();
-  }
+  } // End of Method paintComponent
 
 }
