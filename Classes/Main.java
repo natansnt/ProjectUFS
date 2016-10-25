@@ -18,14 +18,14 @@ public class Main {
   public static void main(String[] args) throws MalformedURLException {
 
     try {
-      FileReader input = new FileReader(args[0]);
+      FileReader input = new FileReader("entradas.txt");
       BufferedReader read = new BufferedReader(input);
 
       Map panel;
       Graph G = new Graph(19);
       JFrame window = new JFrame("UFS Maps");
       JLabel fundo =
-          new JLabel(new ImageIcon(new URL("file:///D:/workspace/Projeto/imagens/fundo.png")));
+          new JLabel(new ImageIcon(new File("imagens/fundo.png").toURL()));
 
       String buffer, data[];
 
